@@ -3,9 +3,9 @@ package deque;
 import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
-    public class Node<T> {
-        public Node<T> prev;
-        public Node<T> next;
+    private class Node<T> {
+        private Node<T> prev;
+        private Node<T> next;
         T value;
     }
 
@@ -20,24 +20,24 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public void addFirst(T item) {
-        final Node<T> new_node = new Node<>();
-        new_node.value = item;
-        final Node<T> now_first = sentinel.next;
-        now_first.prev = new_node;
-        new_node.next = now_first;
-        new_node.prev = sentinel;
-        sentinel.next = new_node;
+        final Node<T> newNode = new Node<>();
+        newNode.value = item;
+        final Node<T> nowFirst = sentinel.next;
+        nowFirst.prev = newNode;
+        newNode.next = nowFirst;
+        newNode.prev = sentinel;
+        sentinel.next = newNode;
         size += 1;
     }
 
     public void addLast(T item) {
-        final Node<T> new_node = new Node<>();
-        new_node.value = item;
-        final Node<T> now_first = sentinel.prev;
-        now_first.next = new_node;
-        new_node.prev = now_first;
-        new_node.next = sentinel;
-        sentinel.prev = new_node;
+        final Node<T> newNode = new Node<>();
+        newNode.value = item;
+        final Node<T> nowFirst = sentinel.prev;
+        nowFirst.next = newNode;
+        newNode.prev = nowFirst;
+        newNode.next = sentinel;
+        sentinel.prev = newNode;
         size += 1;
     }
 
@@ -93,14 +93,14 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return n.value;
     }
 
-    T getR(Node<T> n, int i) {
+    private T getR(Node<T> n, int i) {
         if (n == null) {
             return null;
         }
         if (i == 0) {
             return n.value;
         }
-        return getR(n.next, i-1);
+        return getR(n.next, i - 1);
     }
 
     public T getRecursive(int index) {
@@ -108,9 +108,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     class ListIterator<T> implements Iterator<T> {
-        final private Node<T> sentinel;
+        private Node<T> sentinel;
         private Node<T> cur;
-        public ListIterator(LinkedListDeque obj) {
+        ListIterator(LinkedListDeque obj) {
             sentinel = obj.sentinel;
             cur = sentinel;
         }

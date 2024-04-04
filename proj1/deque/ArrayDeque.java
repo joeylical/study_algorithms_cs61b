@@ -3,28 +3,28 @@ package deque;
 import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T> {
-    final int init_size = 8;
+    final int initSize = 8;
     T[] buffer;
     int first;
     int last;
     public ArrayDeque() {
-        buffer = (T[]) new Object[init_size];
-        first = init_size / 2;
-        last = init_size / 2;
+        buffer = (T[]) new Object[initSize];
+        first = initSize / 2;
+        last = initSize / 2;
     }
 
     private void expand() {
-        T[] new_array = (T[]) new Object[buffer.length * 4];
-        final int new_first = (buffer.length * 4 - (last - first)) / 2;
-        final int new_last = new_first + (last - first);
-        System.arraycopy(buffer, first, new_array, new_first, last - first);
-        buffer = new_array;
-        first = new_first;
-        last = new_last;
+        T[] newArray = (T[]) new Object[buffer.length * 4];
+        final int newFirst = (buffer.length * 4 - (last - first)) / 2;
+        final int newLast = newFirst + (last - first);
+        System.arraycopy(buffer, first, newArray, newFirst, last - first);
+        buffer = newArray;
+        first = newFirst;
+        last = newLast;
     }
 
     public void addFirst(T item) {
-        if(first == 0) {
+        if (first == 0) {
             expand();
         }
 
@@ -46,7 +46,7 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public void printDeque() {
-        for(int i=first;i<last;i++) {
+        for (int i = first; i < last; i++) {
             System.out.print(buffer[i]);
             System.out.print(' ');
         }
@@ -54,17 +54,17 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     private void shrink() {
-        T[] new_array = (T[]) new Object[buffer.length / 4];
-        final int new_first = (buffer.length / 4 - (last - first)) / 2;
-        final int new_last = new_first + (last - first);
-        System.arraycopy(buffer, first, new_array, new_first, last - first);
-        buffer = new_array;
-        first = new_first;
-        last = new_last;
+        T[] newArray = (T[]) new Object[buffer.length / 4];
+        final int newFirst = (buffer.length / 4 - (last - first)) / 2;
+        final int newLast = newFirst + (last - first);
+        System.arraycopy(buffer, first, newArray, newFirst, last - first);
+        buffer = newArray;
+        first = newFirst;
+        last = newLast;
     }
 
     public T removeFirst() {
-        if(first == last) {
+        if (first == last) {
             return null;
         }
         T cur = buffer[first];
@@ -78,13 +78,13 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public T removeLast() {
-        if(first == last) {
+        if (first == last) {
             return null;
         }
-        T cur = buffer[last-1];
+        T cur = buffer[last - 1];
         last -= 1;
 
-        if(size() < buffer.length / 4) {
+        if (size() < buffer.length / 4) {
             shrink();
         }
 
@@ -92,10 +92,31 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public T get(int index) {
-        if(index >= last - first) {
+        if (index >= last - first) {
             return null;
         }
 
         return buffer[first + index];
+    }
+
+    class ArrayDequeIterator<T> implements Iterator<T> {
+        private int cur;
+        public ArrayDequeIterator(ArrayDeque obj) {
+            cur = first;
+        }
+
+        public boolean hasNext() {
+            return last - cur > 0;
+        }
+
+        public T next() {
+            final T v = (T) buffer[cur];
+            cur++;
+            return v;
+        }
+    }
+
+    public Iterator<T> iterator() {
+        return new ArrayDequeIterator<T>(this);
     }
 }
