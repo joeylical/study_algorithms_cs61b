@@ -49,8 +49,8 @@ public class TestArrayDequeEC {
                     if (lld1.size() * lld2.size() == 0) {
                         continue;
                     }
-                    int a = lld1.removeLast();
-                    int b = lld2.removeLast();
+                    Integer a = lld1.removeLast();
+                    Integer b = lld2.removeLast();
                     lastOp = String.format("removeLast(), student was %d, correct was %d", a, b);
                     assertEquals(lastOp, a, b);
                     assertTrue(lastOp, eq(lld1, lld2));
