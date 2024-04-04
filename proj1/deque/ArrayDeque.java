@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T> {
     final int init_size = 8;
     T[] buffer;
     int first;
@@ -39,10 +39,6 @@ public class ArrayDeque<T> {
 
         buffer[last] = item;
         last += 1;
-    }
-
-    public boolean isEmpty() {
-        return (last - first) == 0;
     }
 
     public int size() {
