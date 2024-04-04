@@ -8,7 +8,7 @@ public class GuitarHero {
 //    public static final String keyboard = "q2we4r5ty7u8i9op-[=zxdcfvgbnjmk,.;/' ";
     public static final String KEYBOARD = "1234567qwertyuasdfghjzxcvbnm";
 
-    private static Harp[] strings;
+    private static GuitarString[] strings;
 
     public static void main(String[] args) {
         // equal temperament
@@ -21,10 +21,10 @@ public class GuitarHero {
         // Pythagorean tuning
         // from wikipedia: https://en.wikipedia.org/wiki/Pythagorean_tuning
         final double[] freqs = {1, 9 / 8.0, 81 / 64.0, 4 / 3.0, 3 / 2.0, 27 / 16.0, 243 / 128.0};
-        strings = new Harp[KEYBOARD.length()];
+        strings = new GuitarString[KEYBOARD.length()];
         for (int i = 0; i < KEYBOARD.length(); i++) {
             final double freq = 110 * Math.pow(2, i / freqs.length) * freqs[i % freqs.length];
-            strings[i] = new Harp(freq);
+            strings[i] = new GuitarString(freq);
         }
 
         while (true) {

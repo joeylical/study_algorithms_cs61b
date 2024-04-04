@@ -49,10 +49,4 @@ public class GuitarString {
     public double sample() {
         return buffer.get(0);
     }
-
-    public Deque<Double> getBuffer() {
-        return buffer;
-    }
-
-    public double getDecay() { return DECAY; }
 }

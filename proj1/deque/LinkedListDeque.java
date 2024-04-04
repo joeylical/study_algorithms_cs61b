@@ -104,7 +104,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public T getRecursive(int index) {
-        return getR(sentinel, index);
+        return getR(sentinel.next, index);
     }
 
     private class ListIterator<T> implements Iterator<T> {
@@ -130,18 +130,19 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public boolean equals(Object o) {
-        if (o instanceof LinkedListDeque) {
-            LinkedListDeque o1 = (LinkedListDeque) o;
-            if (o1.size() != size) {
-                return false;
-            }
+        if ((o instanceof LinkedListDeque) || (o instanceof ArrayDeque)) {
+            Iterable<T> o1 = (Iterable<T>) o;
+
             Iterator i1 = o1.iterator();
             Iterator i2 = iterator();
 
             while (i1.hasNext()) {
-                if (i1.next() != i2.next()) {
+                if (!i1.next().equals(i2.next())) {
                     return false;
                 }
+            }
+            if (i2.hasNext()) {
+                return false;
             }
             return true;
         } else {
