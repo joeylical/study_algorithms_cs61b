@@ -12,7 +12,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         return max(comp);
     }
 
-    T max(Comparator<T> c) {
+    public T max(Comparator<T> c) {
         if (size() == 0) {
             return null;
         }
