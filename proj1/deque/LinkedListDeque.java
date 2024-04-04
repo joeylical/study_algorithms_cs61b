@@ -9,7 +9,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         T value;
     }
 
-    final private Node<T> sentinel;
+    private final Node<T> sentinel;
     private int size;
 
     public LinkedListDeque() {
@@ -107,7 +107,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return getR(sentinel, index);
     }
 
-    class ListIterator<T> implements Iterator<T> {
+    private class ListIterator<T> implements Iterator<T> {
         private Node<T> sentinel;
         private Node<T> cur;
         ListIterator(LinkedListDeque obj) {

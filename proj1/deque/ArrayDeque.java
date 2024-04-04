@@ -2,11 +2,11 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Deque<T> {
-    final int initSize = 8;
-    T[] buffer;
-    int first;
-    int last;
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
+    private final int initSize = 8;
+    private T[] buffer;
+    private int first;
+    private int last;
     public ArrayDeque() {
         buffer = (T[]) new Object[initSize];
         first = initSize / 2;
@@ -70,7 +70,7 @@ public class ArrayDeque<T> implements Deque<T> {
         T cur = buffer[first];
         first += 1;
 
-        if(size() < buffer.length / 4) {
+        if (size() < buffer.length / 4) {
             shrink();
         }
 
@@ -99,9 +99,9 @@ public class ArrayDeque<T> implements Deque<T> {
         return buffer[first + index];
     }
 
-    class ArrayDequeIterator<T> implements Iterator<T> {
+    private class ArrayDequeIterator<T> implements Iterator<T> {
         private int cur;
-        public ArrayDequeIterator(ArrayDeque obj) {
+        ArrayDequeIterator(ArrayDeque obj) {
             cur = first;
         }
 
@@ -118,5 +118,25 @@ public class ArrayDeque<T> implements Deque<T> {
 
     public Iterator<T> iterator() {
         return new ArrayDequeIterator<T>(this);
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof ArrayDeque) {
+            ArrayDeque o1 = (ArrayDeque) o;
+            if (o1.size() != size()) {
+                return false;
+            }
+            Iterator i1 = o1.iterator();
+            Iterator i2 = iterator();
+
+            while (i1.hasNext()) {
+                if (i1.next() != i2.next()) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

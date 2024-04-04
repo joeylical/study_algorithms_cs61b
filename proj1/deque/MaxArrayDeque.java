@@ -4,34 +4,23 @@ import java.util.Comparator;
 
 public class MaxArrayDeque<T> extends ArrayDeque<T> {
     Comparator<T> comp;
-    MaxArrayDeque(Comparator<T> c) {
+    public MaxArrayDeque(Comparator<T> c) {
         comp = c;
     }
 
     public T max() {
-        if (first == last) {
-            return null;
-        }
-
-        T maxValue = buffer[first];
-        for (var i = first + 1; i < last; i++) {
-            if (comp.compare(buffer[i], maxValue) > 0) {
-                maxValue = buffer[i];
-            }
-        }
-
-        return maxValue;
+        return max(comp);
     }
 
     T max(Comparator<T> c) {
-        if (first == last) {
+        if (size() == 0) {
             return null;
         }
 
-        T maxValue = buffer[first];
-        for(var i = first + 1; i < last; i++) {
-            if (c.compare(buffer[i], maxValue) > 0) {
-                maxValue = buffer[i];
+        T maxValue = get(0);
+        for (var i = 1; i < size(); i++) {
+            if (c.compare(get(i), maxValue) > 0) {
+                maxValue = get(i);
             }
         }
 
