@@ -118,6 +118,8 @@ public class ArrayDequeTest {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         LinkedListDeque<Integer> lld2 = new LinkedListDeque<Integer>();
         for (int i = 0; i < 1000; i++) {
+            assertTrue("Should have the same value", lld1.equals(lld2));
+            assertTrue("Should have the same value", lld2.equals(lld1));
             final int temp = (int)Math.floor(Math.random() * 65536);
             lld1.addLast(temp);
             lld2.addLast(temp);

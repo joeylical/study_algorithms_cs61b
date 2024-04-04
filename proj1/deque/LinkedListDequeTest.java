@@ -128,10 +128,29 @@ public class LinkedListDequeTest {
     public void eqLLDequeTest() {
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
         LinkedListDeque<Integer> lld2 = new LinkedListDeque<Integer>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
+            assertEquals("Should have the same value", lld1, lld2);
+            assertEquals("Should have the same value", lld2, lld1);
             final int temp = (int)Math.floor(Math.random() * 65536);
-            lld1.addLast(temp);
-            lld2.addLast(temp);
+            final int op = (int) Math.floor(Math.random() * 4);
+            switch (op) {
+                case 0:
+                    lld1.addLast(temp);
+                    lld2.addLast(temp);
+                    break;
+                case 1:
+                    lld1.addFirst(temp);
+                    lld2.addFirst(temp);
+                    break;
+                case 2:
+                    lld1.removeLast();
+                    lld2.removeLast();
+                    break;
+                case 3:
+                    lld1.removeFirst();
+                    lld2.removeFirst();
+                    break;
+            }
         }
 
         assertEquals("Should have the same value", lld1, lld2);
