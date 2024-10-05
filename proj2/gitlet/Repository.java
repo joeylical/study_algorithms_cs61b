@@ -46,13 +46,15 @@ public class Repository {
                 HEAD_FILE.exists();
     }
 
-    private static void initBranch(String commit_name) throws IOException {
+    private static void initBranch(String commit_name) {
         final File master = Utils.join(BRANCHES_DIR, "master");
-        master.createNewFile();
+        try{
+            master.createNewFile();
+        } catch (IOException e){}
         Utils.writeObject(master, commit_name);
     }
 
-    private static void store(Commit commit, List<String> files) throws IOException {
+    private static void store(Commit commit, List<String> files) {
 //        Map<String, String> blobs = new HashMap<>();
         if (files != null)
             for (final String file : files) {
@@ -72,7 +74,7 @@ public class Repository {
         Utils.writeObject(HEAD_FILE, commit_name);
     }
 
-    public static void init() throws IOException {
+    public static void init() {
         final String init_message = "initial commit";
         if(exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
@@ -84,20 +86,25 @@ public class Repository {
         COMMITS_DIR.mkdirs();
         BRANCHES_DIR.mkdirs();
         STAGES_DIR.mkdirs();
-        HEAD_FILE.createNewFile();
-        final Commit c = new Commit(init_message, null, null);
-        initBranch(c.hash());
-        store(c, null);
+        try{
+            HEAD_FILE.createNewFile();
+            final Commit c = new Commit(init_message, null, null);
+            initBranch(c.hash());
+            store(c, null);
+        } catch(IOException e){
+            System.out.println("A Gitlet version-control system already exists in the current directory.");
+        }
+
     }
 
-    public static Commit current() throws IOException {
+    public static Commit current() {
         final String commit_name = Utils.readObject(HEAD_FILE, String.class);
         final File commit_file = Utils.join(COMMITS_DIR, commit_name);
         final Commit result = Utils.readObject(commit_file, Commit.class);
         return result;
     }
 
-    public static String currentBranch() throws IOException {
+    public static String currentBranch() {
         return null;
     }
 
@@ -157,7 +164,7 @@ public class Repository {
         return getRelPath(new File(f));
     }
 
-    public static void add(String file_path) throws IOException {
+    public static void add(String file_path) {
         File f = new File(file_path);
         if(!f.exists()) {
             System.out.println("File does not exist: ");
@@ -178,13 +185,15 @@ public class Repository {
                     return;
                 }
             }
-            staged.createNewFile();
+            try{
+                staged.createNewFile();
+            } catch(IOException e){}
         }
 
         Utils.writeContents(staged, Utils.readContents(f));
     }
 
-    public static void commit(String message) throws IOException {
+    public static void commit(String message) {
         Commit cur = current();
         List<String> files = Utils.plainFilenamesIn(STAGES_DIR);
         Map<String, String> blobs = new HashMap<String, String>();
@@ -200,7 +209,7 @@ public class Repository {
 
     }
 
-    public static void checkout(String unused, String filename) throws IOException {
+    public static void checkout(String unused, String filename) {
         if (!unused.equals("--")) {
             return;
         }
@@ -210,15 +219,19 @@ public class Repository {
             String blob_path = files.get(filename);
             File blob = Utils.join(BLOBS_DIR, blob_path);
             File f = Utils.join(CWD, filename);
-            if (!f.exists())
-                f.createNewFile();
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                }
+            }
             Utils.writeContents(f, Utils.readContentsAsString(blob));
         } else {
             System.out.println("File does not exist in that commit.");
         }
     }
 
-    public static void checkout(String commit_id, String unused, String filename) throws IOException {
+    public static void checkout(String commit_id, String unused, String filename) {
         if (!unused.equals("--")) {
             return;
         }
@@ -228,15 +241,20 @@ public class Repository {
             String blob_path = files.get(filename);
             File blob = Utils.join(BLOBS_DIR, blob_path);
             File f = Utils.join(CWD, filename);
-            if (!f.exists())
-                f.createNewFile();
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             Utils.writeContents(f, Utils.readContentsAsString(blob));
         } else {
             System.out.println("File does not exist in that commit.");
         }
     }
 
-    public static void log() throws IOException {
+    public static void log() {
         Commit cur = current();
 
         do {
