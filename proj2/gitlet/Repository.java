@@ -475,7 +475,8 @@ public class Repository {
                 j--;
             }
 //            ops.add(op);
-            ops.addLast(op);
+//            ops.addLast(op);
+            ops.add(ops.size()-1, op);
         }
 
         return ops;
