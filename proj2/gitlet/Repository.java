@@ -474,10 +474,11 @@ public class Repository {
                 i--;
                 j--;
             }
-            ops.add(op);
+//            ops.add(op);
+            ops.addLast(op);
         }
 
-        return ops.reversed();
+        return ops;
     }
 
     private static List<lineOperation> diff(File from, File to) {
