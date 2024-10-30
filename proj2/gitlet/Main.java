@@ -51,6 +51,30 @@ public class Main {
             case "log":
                 Repository.log();
                 break;
+            case "rm":
+                Repository.rm(args[1]);
+                break;
+            case "global-log":
+                Repository.global_log();
+                break;
+            case "find":
+                Repository.find(args[1]);
+                break;
+            case "status":
+                Repository.status();
+                break;
+            case "branch":
+                Repository.branch(args[1]);
+                break;
+            case "rm-branch":
+                Repository.rm_branch(args[1]);
+                break;
+            case "reset":
+                Repository.reset(args[1]);
+                break;
+            case "merge":
+                Repository.merge("");
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 break;

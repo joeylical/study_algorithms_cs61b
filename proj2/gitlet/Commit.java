@@ -70,4 +70,5 @@ public class Commit implements Serializable {
     public String hash() {
         return Utils.sha1(toBytes());
     }
+    
 }
