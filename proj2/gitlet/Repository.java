@@ -270,6 +270,9 @@ public class Repository {
             System.out.println("No such branch exists.");
             return;
         }
+
+        var trackedFiles = current().getFiles().keySet().stream().collect(Collectors.toList());
+
         var branchCommit = Utils.readContentsAsString(branchFile);
         var branch = getCommitById(branchCommit);
 
@@ -279,7 +282,17 @@ public class Repository {
             String content;
             content = Utils.readContentsAsString(blob_f);
             Utils.writeContents(f, content);
+            trackedFiles.remove(fn);
         });
+
+        for (var f: trackedFiles) {
+            Utils.restrictedDelete(f);
+        }
+
+        HeadInfo hi = Utils.readObject(HEAD_FILE, HeadInfo.class);
+        hi.BranchName = branchName;
+        hi.CommitName = branchCommit;
+        Utils.writeObject(HEAD_FILE, hi);
     }
 
     public static void checkout(String unused, String filename) {
@@ -371,7 +384,7 @@ public class Repository {
             File staged = Utils.join(STAGES_DIR, relPath);
             if (staged.exists()) {
                 noReason = false;
-                Utils.restrictedDelete(staged);
+                staged.delete();
             }
             if (cur.getFiles().get(relPath) != null) {
                 noReason = false;
@@ -382,7 +395,9 @@ public class Repository {
         if (noReason) {
             System.out.println("No reason to remove the file.");
         } else {
-            Utils.restrictedDelete(filename);
+            if (cur.getFiles().get(relPath) != null) {
+                Utils.restrictedDelete(filename);
+            }
         }
     }
 
@@ -496,7 +511,7 @@ public class Repository {
     }
 
     public static void rm_branch(String branchName) {
-        final HeadInfo hi = Utils.readObject(HEAD_FILE, HeadInfo.class);
+//        final HeadInfo hi = Utils.readObject(HEAD_FILE, HeadInfo.class);
         File branchFile = Utils.join(BRANCHES_DIR, branchName);
         if (!branchFile.exists()) {
             System.out.println("A branch with that name does not exist.");
@@ -506,7 +521,7 @@ public class Repository {
             System.out.println("Cannot remove the current branch.");
             return;
         }
-        Utils.restrictedDelete(branchFile);
+        branchFile.delete();
     }
 
     public static void reset(String id) {
@@ -594,7 +609,13 @@ public class Repository {
     }
 
     private static List<lineOperation> diff(File from, File to) {
-        return diff(Utils.readContentsAsString(from), Utils.readContentsAsString(to));
+        String a = "";
+        String b = "";
+        if (from != null)
+            a = Utils.readContentsAsString(from);
+        if (to != null)
+            b = Utils.readContentsAsString(to);
+        return diff(a, b);
     }
 
     static class OpPath{
@@ -736,25 +757,37 @@ public class Repository {
         if (!branchFile.exists()) {
             System.out.println("A branch with that name does not exist.");
         }
-        var branch = Utils.readObject(branchFile, Commit.class);
+        var branchCommit = Utils.readContentsAsString(branchFile);
+        var branch = getCommitById(branchCommit);
         // find LUA
-        Set<Commit> history = new HashSet<>();
+        Set<String> history = new HashSet<>();
 
         Queue<Commit> layer = new ArrayDeque<>();
         layer.add(cur);
         layer.add(branch);
+        history.add(cur.hash());
+        history.add(branch.hash());
 
         Commit lua;
         while (true) {
             Commit pointer = layer.poll();
-            if (history.contains(pointer)) {
+            if (pointer == null) {
+                System.out.println("Error");
+                return;
+            }
+            if (history.contains(pointer.hash())) {
                 lua = pointer;
                 break;
             }
+            history.add(pointer.hash());
             var prev = pointer.getPrevious();
-            for (String p: prev) {
-                Commit c = getCommitById(p);
-                history.add(c);
+            if (prev != null) {
+                for (String p: prev) {
+                    Commit c = getCommitById(p);
+                    if (c != null) {
+                        layer.add(c);
+                    }
+                }
             }
         }
 
@@ -762,7 +795,9 @@ public class Repository {
         if (lua.equals(cur) || lua.equals(branch)) {
             // cur is ancestor of target
             // or target is ancestor of cur
-            Utils.writeObject(HEAD_FILE, branch.hash());
+            HeadInfo hi = Utils.readObject(HEAD_FILE, HeadInfo.class);
+            hi.CommitName = branch.hash();
+            Utils.writeObject(HEAD_FILE, hi);
             cur = current();
             cur.getFiles().forEach((fn, blob) -> {
                 var blobFile = Utils.join(BLOBS_DIR, blob);
@@ -817,5 +852,12 @@ public class Repository {
         for(String file : filesToBeDeleted) {
             Utils.restrictedDelete(Utils.join(CWD, file));
         }
+    }
+
+    public static void debug() {
+        var cur = current();
+        cur.getFiles().forEach((fn, blob) -> {
+            System.out.println(String.format("%s -> %s", fn, blob));
+        });
     }
 }
