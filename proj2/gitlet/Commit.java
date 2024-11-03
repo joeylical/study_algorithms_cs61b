@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
  *  @author Li
@@ -32,7 +31,10 @@ public class Commit implements Serializable {
         this.files = files;
     }
 
-    public Commit(String message, long timestamp, List<String> previous, Map<String, String> files) {
+    public Commit(String message,
+                  long timestamp,
+                  List<String> previous,
+                  Map<String, String> files) {
         this.message = message;
         this.timestamp = timestamp;
         this.previous = previous;
